@@ -2,9 +2,9 @@
 
 NAME=vimcity
 
-CFLAGS = $(sdl2-config --cflags) -Wall -Wextra -g
+CFLAGS = $(shell sdl2-config --cflags) -Wall -Wextra -g
 
-LPATH = $(sdl2-config --libs)
+LPATH = $(shell sdl2-config --libs)
 
 HEADERS = $(wildcard *.h)
 
@@ -17,7 +17,7 @@ $(NAME): $(OBJS)
 	$(CC) -o $(NAME) $(OBJS) $(CFLAGS) $(LPATH)
 
 %.o: %.c $(HEADERS)
-	@$(CC) -o $@ -c $< $(CFLAGS)
+	$(CC) -o $@ -c $< $(CFLAGS)
 	@echo CC: $<
 
 clean:

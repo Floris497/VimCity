@@ -15,7 +15,7 @@ int main(int argc, char* args[]) {
         printf("SDL not loaded");
     } else {
         //Create window
-        window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN, SDL_WINDOW_ALLOW_HIGHDPI);
         if(window == NULL) {
             printf("could not make window");
         } else {
@@ -24,6 +24,7 @@ int main(int argc, char* args[]) {
             while (!quit) {
                 quit = !gameLoop(window, screenSurface);
             }
+            Uint64 now = SDL_GetPerformanceCounter();
             
             SDL_DestroyWindow(window);
             SDL_Quit();

@@ -1,8 +1,11 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;
+
+gameLoop(SDL_Window *window, SDL_Surface *screenSurface);
 
 int main(int argc, char* args[]) {
     SDL_Window* window = NULL;
@@ -17,28 +20,16 @@ int main(int argc, char* args[]) {
             printf("could not make window");
         } else {
             screenSurface = SDL_GetWindowSurface(window);
-            bool quit = false;                                      
-            SDL_Event e;                                            
-            while (!quit) {                                         
-                while (SDL_PollEvent(&e)) {      
-                    SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-                    SDL_UpdateWindowSurface( window );                   
-                    if (e.type == SDL_QUIT) {                       
-                        quit = true;                                
-                    }                                               
-                }                                                   
-            }        
-
+            bool quit = false;
+            while (!quit) {
+                quit = !gameLoop(window, screenSurface);
+            }
+            
             SDL_DestroyWindow(window);
-
             SDL_Quit();
         }
-	printf("einde\n");
-    return 0;
+        printf("einde\n");
+        return 0;
     }
-}
-
-void gameLoop() {
-
 }
 

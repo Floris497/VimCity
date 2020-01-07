@@ -1,3 +1,10 @@
+//
+//  main.c
+//
+//
+//  Created by Floris Fredrikze on 07/01/2020.
+//
+
 #include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -5,16 +12,17 @@
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 
-int gameLoop(SDL_Window *window, SDL_Surface *screenSurface);
+int gameLoop(SDL_Window *window, SDL_Renderer *renderer);
 
 #define FRAME_DURATION (SDL_GetPerformanceFrequency()/60)
 
 int main(int argc, char* args[]) {
     SDL_Window* window = NULL;
-    SDL_Surface* screenSurface = NULL;
-    
+    SDL_Renderer *renderer = NULL;
+    SDL_Texture *texture = NULL;
+
     long double duration = (SDL_GetPerformanceFrequency()/60.0);
-    
+
     if(SDL_Init( SDL_INIT_VIDEO) < 0) {
         printf("SDL not loaded");
     } else {
@@ -23,14 +31,16 @@ int main(int argc, char* args[]) {
         if(window == NULL) {
             printf("could not make window");
         } else {
-            screenSurface = SDL_GetWindowSurface(window);
+                        
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+
             bool quit = false;
-            
+
             long double delta;
             Uint64 now, end, taken;
             while (!quit) {
                 now = SDL_GetPerformanceCounter();
-                quit = !gameLoop(window, screenSurface);
+                quit = !gameLoop(window, renderer);
                 end = SDL_GetPerformanceCounter();
                 taken = end - now;
                 delta = round(duration - taken) / (SDL_GetPerformanceFrequency() / 1000);
@@ -38,7 +48,8 @@ int main(int argc, char* args[]) {
                 if (delta > 0)
                     SDL_Delay(round(delta));
             }
-            
+
+            SDL_DestroyRenderer(renderer);
             SDL_DestroyWindow(window);
             SDL_Quit();
         }
@@ -46,4 +57,3 @@ int main(int argc, char* args[]) {
         return 0;
     }
 }
-

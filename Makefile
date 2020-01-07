@@ -4,7 +4,7 @@ NAME=vimcity
 
 CFLAGS = $(shell sdl2-config --cflags) -Wall -Wextra -g
 
-LPATH = $(shell sdl2-config --libs)
+LPATH = $(shell sdl2-config --static-libs)
 
 HEADERS = $(wildcard *.h)
 

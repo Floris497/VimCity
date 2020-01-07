@@ -10,33 +10,26 @@
 #include <stdlib.h>
 #include <SDL.h>
 
-const int CELL_SIZE = 5;
-
-typedef struct s_color t_color;
-
-struct s_color {
-    Uint8 r;
-    Uint8 g;
-    Uint8 b;
-    Uint8 a;
-};
+const int CELL_SIZE = 20;
 
 t_color colors[] = {
-    {0,0,0,255},
-    {255, 0, 0, 255},
-    {0,255, 0, 255},
-    {0,0,255,255}
+    {0x00, 0x00 , 0x00, 0xFF}, // black
+    {0xFF, 0x00 , 0x00, 0xFF}, // red
+    {0x00, 0xFF , 0x00, 0xFF}, // green
+    {0x00, 0x00 , 0xFF, 0xFF}, // blue
 };
 
-int gameLoop(SDL_Window *window, SDL_Renderer *renderer) {
+int gameLoop(SDL_Renderer *renderer) {
     int w = 80;
     int h = 60;
-    int grid[w * h];
+    
+    int grid[w][h];
     for(int i = 0; i < w; i++) {
         for(int j = 0; j < h; j++) {
-            grid[i + j * w] = rand()%4; 
+            grid[i][j] = rand()%4;
         }
     }
+    
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT) {
@@ -49,7 +42,7 @@ int gameLoop(SDL_Window *window, SDL_Renderer *renderer) {
 
     for(int i = 0; i < w; i++) {
         for(int j = 0; j < h; j++) {
-            int val = grid[i+j*w];
+            int val = grid[i][j];
             SDL_Rect rect = {i*CELL_SIZE, j*CELL_SIZE, CELL_SIZE, CELL_SIZE};
             t_color color = colors[val];
             
@@ -58,5 +51,5 @@ int gameLoop(SDL_Window *window, SDL_Renderer *renderer) {
         }
     }
     SDL_RenderPresent(renderer);
-    return 1;
+    return true;
 }

@@ -13,10 +13,11 @@
 
 #define FRAME_DURATION (SDL_GetPerformanceFrequency()/60)
 
-int main(int argc, char* args[]) {
+//int main(int argc, char* args[])
+int main(void) {
     SDL_Window      *window   = NULL;
     SDL_Renderer    *renderer = NULL;
-    SDL_Texture     *texture  = NULL;
+    t_game          gameState = {};
 
     long double duration = (SDL_GetPerformanceFrequency()/60.0);
 
@@ -28,16 +29,19 @@ int main(int argc, char* args[]) {
         if(window == NULL) {
             printf("could not make window");
         } else {
-                        
+            int w,h;
+            SDL_GetWindowSize(window, &w, &h);
+            gameState.screenSize.width = w;
+            gameState.screenSize.height = h;
+            
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-
 
             long double delta;
             Uint64 now, end, taken;
             bool ret = true;
             while (ret) {
                 now = SDL_GetPerformanceCounter();
-                ret = gameLoop(renderer);
+                ret = gameLoop(renderer, gameState);
                 end = SDL_GetPerformanceCounter();
                 taken = end - now;
                 delta = round(duration - taken) / (SDL_GetPerformanceFrequency() / 1000);

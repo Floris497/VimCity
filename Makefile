@@ -17,7 +17,7 @@ $(NAME): $(OBJS)
 	$(CC) -o $(NAME) $(OBJS) $(CFLAGS) $(LPATH)
 
 %.o: %.c $(HEADERS)
-	$(CC) -o $@ -c $< $(CFLAGS)
+	@$(CC) -o $@ -c $< $(CFLAGS)
 	@echo CC: $<
 
 clean:

@@ -36,7 +36,7 @@ struct s_point {
 
 struct s_size {
     Uint64 width;
-    Uint64 heigt;
+    Uint64 height;
 };
 
 struct s_rect {
@@ -54,6 +54,6 @@ struct s_game {
     t_size screenSize;
 };
 
-int gameLoop(SDL_Renderer *renderer);
+int gameLoop(SDL_Renderer *renderer, t_game gameState);
 
 #endif /* vimcity_h */

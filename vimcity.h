@@ -8,6 +8,9 @@
 #ifndef vimcity_h
 #define vimcity_h
 
+// for types
+#include <SDL_stdinc.h>
+
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
@@ -26,29 +29,30 @@ struct s_color {
     Uint8 a;
 };
 
-struct s_game {
-    t_map map;
-    t_size screenSize;
-}
-
-struct s_map {
-    field *field;
-    t_size size;
-}
-
 struct s_point {
-    Int64 x;
-    Int64 y;
-}
+    Sint64 x;
+    Sint64 y;
+};
+
 struct s_size {
     Uint64 width;
-    Uint64 heigt:
-}
+    Uint64 heigt;
+};
+
 struct s_rect {
     t_point origin;
     t_size size;
-}
+};
 
+struct s_map {
+    int *field;
+    t_size size;
+};
+
+struct s_game {
+    t_map map;
+    t_size screenSize;
+};
 
 int gameLoop(SDL_Renderer *renderer);
 

@@ -9,6 +9,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <SDL.h>
+#include "vimcity.h"
 
 const int CELL_SIZE = 20;
 

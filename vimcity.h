@@ -8,8 +8,8 @@
 #ifndef vimcity_h
 #define vimcity_h
 
-const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 720;
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 
 typedef struct s_color t_color;
 

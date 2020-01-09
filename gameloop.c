@@ -20,7 +20,23 @@ t_color colors[] = {
     {0x00, 0x00 , 0xFF, 0xFF}, // blue
 };
 
+int draw(SDL_Renderer *renderer);
+
 int gameLoop(SDL_Renderer *renderer) {
+
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        if (e.type == SDL_QUIT) {
+            return false;
+        }
+    }    
+    
+    draw(renderer);
+    
+    return true;
+}
+
+int draw(SDL_Renderer *renderer) {
     int w = 80;
     int h = 60;
     
@@ -31,13 +47,6 @@ int gameLoop(SDL_Renderer *renderer) {
         }
     }
     
-    SDL_Event e;
-    while (SDL_PollEvent(&e)) {
-        if (e.type == SDL_QUIT) {
-            return false;
-        }
-    }    
-
     SDL_SetRenderDrawColor(renderer, 0,0,0,0);
     SDL_RenderClear(renderer);
 
@@ -52,5 +61,6 @@ int gameLoop(SDL_Renderer *renderer) {
         }
     }
     SDL_RenderPresent(renderer);
+    
     return true;
 }

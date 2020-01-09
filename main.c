@@ -11,8 +11,6 @@
 
 #include "vimcity.h"
 
-#define FRAME_DURATION (SDL_GetPerformanceFrequency()/60)
-
 //int main(int argc, char* args[])
 int main(void) {
     SDL_Window      *window   = NULL;
@@ -33,7 +31,7 @@ int main(void) {
             SDL_GetWindowSize(window, &w, &h);
             gameState.screenSize.width = w;
             gameState.screenSize.height = h;
-            
+                        
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
             long double delta;

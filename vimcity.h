@@ -15,6 +15,7 @@
 #define SCREEN_HEIGHT 720
 
 typedef struct s_color t_color;
+
 typedef struct s_game t_game;
 typedef struct s_map t_map;
 

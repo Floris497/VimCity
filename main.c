@@ -12,6 +12,19 @@
 #include "vimcity.h"
 #include "list.h"
 
+Uint64 getFPS(t_list *list, size_t size)
+{
+    Uint64 duration = 0;
+    
+    for (size_t len = 0; len < size; len++)
+    {
+        duration += (Uint64)list->value;
+        list = list->next;
+    }
+    
+    return (SDL_GetPerformanceFrequency() / (duration / size));
+}
+
 //int main(int argc, char* args[])
 int main(void) {
     SDL_Window      *window   = NULL;
@@ -46,9 +59,14 @@ int main(void) {
                 end = SDL_GetPerformanceCounter();
                 taken = end - now;
                 delta = round(duration - taken) / (SDL_GetPerformanceFrequency() / 1000);
-                SDL_Log("Taken: %llu, %Lf\n", taken / SDL_GetPerformanceFrequency(), delta);
+//                SDL_Log("Taken: %llu, %Lf\n", taken / SDL_GetPerformanceFrequency(), delta);
+                SDL_Log("FPS: %llu", getFPS(list, 10));
                 if (delta > 0)
                     SDL_Delay(round(delta));
+                end = SDL_GetPerformanceCounter();
+                taken = end - now;
+                list->value = (void *)taken;
+                list = list->next;
             }
 
             SDL_DestroyRenderer(renderer);

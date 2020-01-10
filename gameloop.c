@@ -21,9 +21,9 @@ t_color colors[] = {
     {0x00, 0x00 , 0xFF, 0xFF}, // blue
 };
 
-int draw(SDL_Renderer *renderer, t_game gameState);
+int draw(SDL_Renderer *renderer, t_game *gameState);
 
-int gameLoop(SDL_Renderer *renderer, t_game gameState) {
+int gameLoop(SDL_Renderer *renderer, t_game *gameState) {
 
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
@@ -37,9 +37,9 @@ int gameLoop(SDL_Renderer *renderer, t_game gameState) {
     return true;
 }
 
-int draw(SDL_Renderer *renderer, t_game gameState) {
-    int w = gameState.screenSize.width / CELL_SIZE;
-    int h = gameState.screenSize.height / CELL_SIZE;
+int draw(SDL_Renderer *renderer, t_game *gameState) {
+    int w = gameState->screenSize.width / CELL_SIZE;
+    int h = gameState->screenSize.height / CELL_SIZE;
 
     int grid[w][h];
     for(int i = 0; i < w; i++) {

@@ -14,11 +14,12 @@ t_list *circularList(size_t size) {
     t_list *list;
     
     for (size_t i = 0; i < size; i++) {
-        list = mem + (sizeof(t_list) * i);
-        list->next = (t_list *)(sizeof(t_list) * (i + 1));
+        list = &((t_list *)mem)[i];
+        list->next = &list[1];
+        list->value = (void *)i + 1;
     }
     
-    list = mem + (sizeof(t_list) * size);
+    list = &((t_list *)mem)[size - 1];
     list->next = (t_list *)mem;
     
     return (t_list *)mem;

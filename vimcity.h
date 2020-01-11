@@ -55,6 +55,6 @@ struct s_game {
     t_size screenSize;
 };
 
-int gameLoop(SDL_Renderer *renderer, t_game gameState);
+int gameLoop(SDL_Renderer *renderer, t_game *gameState);
 
 #endif /* vimcity_h */

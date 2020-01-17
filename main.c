@@ -45,14 +45,13 @@ int main(void) {
         } else {
             int w,h;
             SDL_GetWindowSize(window, &w, &h);
-            gameState.screenSize.width = w;
-            gameState.screenSize.height = h;
                         
             renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
             long double delta;
             Uint64 now, end, taken;
             bool ret = true;
+            init_game(&gameState);
             while (ret) {
                 now = SDL_GetPerformanceCounter();
                 ret = gameLoop(renderer, &gameState);

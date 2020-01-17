@@ -12,8 +12,6 @@
 
 #include "vimcity.h"
 
-const int CELL_SIZE = 20;
-
 t_color colors[] = {
     {0x00, 0x00 , 0x00, 0xFF}, // black
     {0xFF, 0x00 , 0x00, 0xFF}, // red
@@ -21,10 +19,21 @@ t_color colors[] = {
     {0x00, 0x00 , 0xFF, 0xFF}, // blue
 };
 
-int draw(SDL_Renderer *renderer, t_game *gameState);
+void init_game(t_game *gameState) {
+    int w = 20;
+    int h = 20; 
+    gameState -> map.field = (int **)malloc(w * sizeof(int*));
+    for(int i = 0; i < w; i++) {
+        gameState -> map.field[i] = (int *) malloc(h * sizeof(int));
+        for(int j = 0; j < h; j++) {
+            gameState->map.field[i][j] = rand()%4;
+        }
+    }
+    gameState -> map.width = w;
+    gameState -> map.height = h;
+}
 
 int gameLoop(SDL_Renderer *renderer, t_game *gameState) {
-
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT) {
@@ -38,22 +47,14 @@ int gameLoop(SDL_Renderer *renderer, t_game *gameState) {
 }
 
 int draw(SDL_Renderer *renderer, t_game *gameState) {
-    int w = gameState->screenSize.width / CELL_SIZE;
-    int h = gameState->screenSize.height / CELL_SIZE;
 
-    int grid[w][h];
-    for(int i = 0; i < w; i++) {
-        for(int j = 0; j < h; j++) {
-            grid[i][j] = rand()%4;
-        }
-    }
-    
     SDL_SetRenderDrawColor(renderer, 0,0,0,0);
     SDL_RenderClear(renderer);
-
+    int w = gameState -> map.width;
+    int h = gameState -> map.height;
     for(int i = 0; i < w; i++) {
         for(int j = 0; j < h; j++) {
-            int val = grid[i][j];
+            int val = gameState -> map.field[i][j];
             SDL_Rect rect = {i*CELL_SIZE, j*CELL_SIZE, CELL_SIZE, CELL_SIZE};
             t_color color = colors[val];
             

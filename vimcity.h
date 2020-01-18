@@ -35,7 +35,11 @@ struct s_map {
 
 struct s_game {
     t_map map;
+    int cursorX;
+    int cursorY;
 };
+
+void moveCursor(t_game*, int, int);
 
 void init_game(t_game *gameState);
 

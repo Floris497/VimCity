@@ -59,7 +59,7 @@ int main(void) {
                 taken = end - now;
                 delta = round(duration - taken) / (SDL_GetPerformanceFrequency() / 1000);
 //                SDL_Log("Taken: %llu, %Lf\n", taken / SDL_GetPerformanceFrequency(), delta);
-                SDL_Log("FPS: %llu", getFPS(list, 10));
+                //SDL_Log("FPS: %llu", getFPS(list, 10));
                 if (delta > 0)
                     SDL_Delay(round(delta));
                 end = SDL_GetPerformanceCounter();

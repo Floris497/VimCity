@@ -30,7 +30,7 @@ int main(void) {
     SDL_Window      *window   = NULL;
     SDL_Renderer    *renderer = NULL;
     t_game          gameState = {};
-
+    t_screen        screenState = {1280, 720, NULL};
     long double duration = (SDL_GetPerformanceFrequency()/60.0);
 
     t_list *list = circularList(10);
@@ -39,14 +39,19 @@ int main(void) {
         printf("SDL not loaded");
     } else {
         //Create window
-        window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
+        window = SDL_CreateWindow("SDL Tutorial", 
+                SDL_WINDOWPOS_UNDEFINED,
+                SDL_WINDOWPOS_UNDEFINED,
+                screenState.width , 
+                screenState.height,
+                SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
         if(window == NULL) {
             printf("could not make window");
         } else {
             int w,h;
             SDL_GetWindowSize(window, &w, &h);
                         
-            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+            screenState.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
             long double delta;
             Uint64 now, end, taken;
@@ -54,14 +59,15 @@ int main(void) {
             init_game(&gameState);
             while (ret) {
                 now = SDL_GetPerformanceCounter();
-                ret = gameLoop(renderer, &gameState);
+                ret = gameLoop(&screenState, &gameState);
                 end = SDL_GetPerformanceCounter();
                 taken = end - now;
                 delta = round(duration - taken) / (SDL_GetPerformanceFrequency() / 1000);
 //                SDL_Log("Taken: %llu, %Lf\n", taken / SDL_GetPerformanceFrequency(), delta);
                 //SDL_Log("FPS: %llu", getFPS(list, 10));
-                if (delta > 0)
+                if (delta > 0) {
                     SDL_Delay(round(delta));
+                }
                 end = SDL_GetPerformanceCounter();
                 taken = end - now;
                 list->value = (void *)taken;

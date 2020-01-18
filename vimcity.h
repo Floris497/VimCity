@@ -10,15 +10,19 @@
 
 // for types
 #include <SDL_stdinc.h>
-
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
 #define CELL_SIZE 20
 
 typedef struct s_color t_color;
 
 typedef struct s_game t_game;
 typedef struct s_map t_map;
+
+typedef struct s_screen t_screen;
+struct s_screen {
+    int width; 
+    int height;
+    SDL_Renderer *renderer;
+};
 
 struct s_color {
     Uint8 r;
@@ -43,8 +47,8 @@ void moveCursor(t_game*, int, int);
 
 void init_game(t_game *gameState);
 
-int draw(SDL_Renderer *renderer, t_game *gameState);
+int draw(t_screen *screen, t_game *gameState);
 
-int gameLoop(SDL_Renderer *renderer, t_game *gameState);
+int gameLoop(t_screen* screen, t_game *gameState);
 
 #endif /* vimcity_h */

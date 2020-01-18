@@ -34,7 +34,6 @@ void init_game(t_game *gameState) {
 }
 
 void moveCursor(t_game *gameState, int xDir, int yDir) {
-    SDL_Log("cursor moved in direction (%d, %d)", xDir, yDir);
     int w = gameState->map.width;
     int h = gameState->map.height;
     gameState->cursorX+=xDir;
@@ -49,11 +48,11 @@ void moveCursor(t_game *gameState, int xDir, int yDir) {
         gameState->cursorX = w-1;
     }
     if(gameState->cursorY >= h) {
-        gameState->cursorX = h-1;
+        gameState->cursorY = h-1;
     }
 }
 
-int gameLoop(SDL_Renderer *renderer, t_game *gameState) {
+int gameLoop(t_screen *screen, t_game *gameState) {
     SDL_Event e;
     bool keepRunning = true;
     while (SDL_PollEvent(&e)) {
@@ -79,13 +78,13 @@ int gameLoop(SDL_Renderer *renderer, t_game *gameState) {
         }
 
     }    
-    draw(renderer, gameState);
+    draw(screen, gameState);
     return keepRunning;
 }
 
-int draw(SDL_Renderer *renderer, t_game *gameState) {
-    SDL_SetRenderDrawColor(renderer, 0,0,0,0);
-    SDL_RenderClear(renderer);
+int draw(t_screen *screen, t_game *gameState) {
+    SDL_SetRenderDrawColor(screen->renderer, 0,0,0,0);
+    SDL_RenderClear(screen->renderer);
     int w = gameState -> map.width;
     int h = gameState -> map.height;
     for(int i = 0; i < w; i++) {
@@ -94,17 +93,17 @@ int draw(SDL_Renderer *renderer, t_game *gameState) {
             SDL_Rect rect = {i*CELL_SIZE, j*CELL_SIZE, CELL_SIZE, CELL_SIZE};
             t_color color = colors[val];
             
-            SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 0xFF);
-            SDL_RenderFillRect(renderer, &rect);
+            SDL_SetRenderDrawColor(screen->renderer, color.r, color.g, color.b, 0xFF);
+            SDL_RenderFillRect(screen->renderer, &rect);
         }
     }
 
     //draw cursor
     SDL_Rect cursorOutline = {gameState->cursorX *CELL_SIZE, gameState->cursorY * CELL_SIZE, CELL_SIZE, CELL_SIZE};
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderFillRect(renderer, &cursorOutline);
+    SDL_SetRenderDrawColor(screen->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderFillRect(screen->renderer, &cursorOutline);
 
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(screen->renderer);
     
     return true;
 }

@@ -5,80 +5,69 @@
 //  Created by Floris Fredrikze on 07/01/2020.
 //
 
-#include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
 
 #include "vimcity.h"
 #include "list.h"
-
-Uint64 getFPS(t_list *list, size_t size)
-{
-    Uint64 duration = 0;
-    
-    for (size_t len = 0; len < size; len++)
-    {
-        duration += (Uint64)list->value;
-        list = list->next;
-    }
-    
-    return (SDL_GetPerformanceFrequency() / (duration / size));
-}
+#include "init.h"
 
 //int main(int argc, char* args[])
 int main(void) {
-    SDL_Window      *window   = NULL;
-    SDL_Renderer    *renderer = NULL;
+    SDL_Window      *window = NULL;
     t_game          gameState = {};
-    t_screen        screenState = {1280, 720, NULL};
-    long double duration = (SDL_GetPerformanceFrequency()/60.0);
+    t_screen        screenState = {};
 
-    t_list *list = circularList(10);
-    
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDL not loaded");
+        SDL_Log("SDL not loaded");
+    } if (TTF_Init()) {
+        SDL_Log("SDL_ttf not loaded");
     } else {
+
+        // init Graphics
+        init_graphics(&screenState);
+
         //Create window
-        window = SDL_CreateWindow("SDL Tutorial", 
-                SDL_WINDOWPOS_UNDEFINED,
-                SDL_WINDOWPOS_UNDEFINED,
-                screenState.width , 
-                screenState.height,
-                SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
-        if(window == NULL) {
-            printf("could not make window");
+        window = SDL_CreateWindow("SDL Tutorial",
+                                  SDL_WINDOWPOS_UNDEFINED,
+                                  SDL_WINDOWPOS_UNDEFINED,
+                                  screenState.width,
+                                  screenState.height,
+                                  SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
+
+        if (window == NULL) {
+            SDL_Log("could not make window");
         } else {
             int w,h;
             SDL_GetWindowSize(window, &w, &h);
-                        
+
             screenState.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
             long double delta;
-            Uint64 now, end, taken;
+            Uint64 now, taken;
             bool ret = true;
             init_game(&gameState);
             while (ret) {
                 now = SDL_GetPerformanceCounter();
-                ret = gameLoop(&screenState, &gameState);
-                end = SDL_GetPerformanceCounter();
-                taken = end - now;
-                delta = round(duration - taken) / (SDL_GetPerformanceFrequency() / 1000);
-//                SDL_Log("Taken: %llu, %Lf\n", taken / SDL_GetPerformanceFrequency(), delta);
-                //SDL_Log("FPS: %llu", getFPS(list, 10));
-                if (delta > 0) {
-                    SDL_Delay(round(delta));
-                }
-                end = SDL_GetPerformanceCounter();
-                taken = end - now;
-                list->value = (void *)taken;
-                list = list->next;
-            }
 
-            SDL_DestroyRenderer(renderer);
+                // run game loop
+                ret = gameLoop(&screenState, &gameState);
+
+                taken = SDL_GetPerformanceCounter() - now;
+                delta = round(screenState.timePerFrame - taken) / (SDL_GetPerformanceFrequency() / 1000);
+                if (delta > 0) { SDL_Delay(round(delta)); }
+                taken = SDL_GetPerformanceCounter() - now;
+                screenState.FPSHistory->value = (void *)taken;
+                screenState.FPSHistory = screenState.FPSHistory->next;
+            }
             SDL_DestroyWindow(window);
-            SDL_Quit();
         }
-        printf("einde\n");
+
+        SDL_DestroyRenderer(screenState.renderer);
+        TTF_CloseFont(screenState.font);
+        SDL_Quit();
+
+        SDL_Log("einde");
         return 0;
     }
 }

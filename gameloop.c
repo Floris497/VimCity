@@ -11,6 +11,7 @@
 #include <SDL.h>
 
 #include "vimcity.h"
+#include "utils.h"
 
 t_color colors[] = {
     {0x00, 0x00 , 0x00, 0xFF}, // black
@@ -19,25 +20,11 @@ t_color colors[] = {
     {0x00, 0x00 , 0xFF, 0xFF}, // blue
 };
 
-void init_game(t_game *gameState) {
-    int w = 80;
-    int h = 20; 
-    gameState -> map.field = (int **)malloc(w * sizeof(int*));
-    for(int i = 0; i < w; i++) {
-        gameState -> map.field[i] = (int *) malloc(h * sizeof(int));
-        for(int j = 0; j < h; j++) {
-            gameState->map.field[i][j] = rand()%4;
-        }
-    }
-    gameState -> map.width = w;
-    gameState -> map.height = h;
-}
-
 void moveCursor(t_game *gameState, int xDir, int yDir) {
     int w = gameState->map.width;
     int h = gameState->map.height;
-    gameState->cursorX+=xDir;
-    gameState->cursorY+=yDir;
+    gameState->cursorX += xDir;
+    gameState->cursorY += yDir;
     if(gameState->cursorX < 0) {
         gameState->cursorX = 0;
     }
@@ -103,6 +90,11 @@ int draw(t_screen *screen, t_game *gameState) {
     SDL_SetRenderDrawColor(screen->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderFillRect(screen->renderer, &cursorOutline);
 
+    t_text textureInfo;
+    textureInfo.color = (SDL_Color){255,255,255,200};
+    SDL_Texture *texture = createTextTexture(getFPSText(screen->FPSHistory, 10), screen, &textureInfo);
+    SDL_RenderCopy(screen->renderer, texture, NULL, &textureInfo.rect);
+    SDL_DestroyTexture(textureInfo.texture);
     SDL_RenderPresent(screen->renderer);
     
     return true;

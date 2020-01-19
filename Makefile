@@ -2,9 +2,9 @@
 
 NAME=vimcity
 
-CFLAGS = $(shell sdl2-config --cflags) -Wall -Wextra -g
+CFLAGS = -I/usr/local/include/SDL2 -D_THREAD_SAFE -Wall -Wextra -g # -Werror
 
-LPATH = $(shell sdl2-config --libs)
+LPATH = -L/usr/local/lib -lSDL2 -lSDL2_ttf
 
 HEADERS = $(wildcard *.h)
 

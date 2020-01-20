@@ -49,7 +49,7 @@ CFLAGS = -D_THREAD_SAFE -Wall -Wextra -g $(W_CFLAGS)
 W_LPATH = \
 	-L/Users/floris/Documents/WinLibs/SDL2-2.0.10/lib/x64/ \
 	-L/Users/floris/Documents/WinLibs/SDL2_ttf-2.0.15/lib/x64/ \
-	-Xlinker /subsystem:console
+	-Xlinker /subsystem:windows
 	
 LPATH = $(W_LPATH) -lSDL2main -lSDL2 -lSDL2_ttf
 

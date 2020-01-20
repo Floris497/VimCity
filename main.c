@@ -12,8 +12,7 @@
 #include "list.h"
 #include "init.h"
 
-//int main(int argc, char* args[])
-int main(void) {
+int main(int argc, char* args[]) {
     SDL_Window      *window = NULL;
     t_game          gameState = {};
     t_screen        screenState = {};
@@ -28,7 +27,7 @@ int main(void) {
         init_graphics(&screenState);
 
         //Create window
-        window = SDL_CreateWindow("SDL Tutorial",
+        window = SDL_CreateWindow("VimCity Pre Alpha 0.0.0",
                                   SDL_WINDOWPOS_UNDEFINED,
                                   SDL_WINDOWPOS_UNDEFINED,
                                   screenState.width,
@@ -66,8 +65,7 @@ int main(void) {
         SDL_DestroyRenderer(screenState.renderer);
         TTF_CloseFont(screenState.font);
         SDL_Quit();
-
         SDL_Log("einde");
-        return 0;
     }
+    return 0;
 }

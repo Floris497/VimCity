@@ -90,12 +90,17 @@ int draw(t_screen *screen, t_game *gameState) {
     SDL_SetRenderDrawColor(screen->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderFillRect(screen->renderer, &cursorOutline);
 
+
+#ifdef _WIN32
+    SDL_Log("No FONTS in Windows..");
+#else
     t_text textureInfo;
     textureInfo.color = (SDL_Color){255,255,255,200};
-    SDL_Texture *texture = createTextTexture(getFPSText(screen->FPSHistory, 10), screen, &textureInfo);
+    SDL_Texture *texture = createTextTexture(getFPSText(screen->FPSHistory, 60), screen, &textureInfo);
     SDL_RenderCopy(screen->renderer, texture, NULL, &textureInfo.rect);
     SDL_DestroyTexture(textureInfo.texture);
+#endif
     SDL_RenderPresent(screen->renderer);
-    
+
     return true;
 }

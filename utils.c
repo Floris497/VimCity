@@ -5,6 +5,8 @@
 //  Created by Floris Fredrikze on 19/01/2020.
 //
 
+#include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include "utils.h"
 

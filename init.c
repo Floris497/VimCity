@@ -5,6 +5,8 @@
 //  Created by Floris Fredrikze on 19/01/2020.
 //
 
+#include <stdlib.h>
+
 #include "init.h"
 #include "list.h"
 
@@ -15,8 +17,12 @@ void init_graphics(t_screen *screenState)
     screenState->renderer = NULL;
     screenState->timePerFrame = (SDL_GetPerformanceFrequency()/60.0);
     screenState->FPSHistory = circularList(10);
+#ifdef _WIN32
+    screenState->font = TTF_OpenFont("C:/Users/MacBook Air/Desktop/UbuntuMono-R.ttf", 20);
+#else
+    screenState->font = TTF_OpenFont("./assets/fonts/UbuntuMono-R.ttf", 20);
+#endif
 
-    screenState->font = TTF_OpenFont("assets/fonts/UbuntuMono-R.ttf", 20);
 }
 
 void init_game(t_game *gameState) {

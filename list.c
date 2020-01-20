@@ -16,7 +16,7 @@ t_list *circularList(size_t size) {
     for (size_t i = 0; i < size; i++) {
         list = &((t_list *)mem)[i];
         list->next = &list[1];
-        list->value = (void *)i + 1;
+        list->value = (int *)16;
     }
     
     list = &((t_list *)mem)[size - 1];

@@ -28,27 +28,27 @@ WINFLAGS = \
 	-U__GNUC_PATCHLEVEL__ \
 	-U__GNUC_STDC_INLINE__   \
 	-I/usr/local/Cellar/llvm/9.0.0_1/include \
-	-I/Users/floris/Documents/WinLibs/Microsoft\ Visual\ Studio/2019/Community/VC/Tools/MSVC/14.24.28314/include  \
-	-I/Users/floris/Documents/WinLibs/Windows\ Kits/10/Include/10.0.18362.0/ucrt  \
-	-I/Users/floris/Documents/WinLibs/Windows\ Kits/10/Include/10.0.18362.0/shared  \
-	-I/Users/floris/Documents/WinLibs/Windows\ Kits/10/Include/10.0.18362.0/winrt \
+	-I./.windows/MSVC/include  \
+	-I./.windows/ucrt/include  \
+	-I./.windows/shared/include  \
+	-I./.windows/winrt/include \
 	-Wno-ignored-attributes
 	
 W_LINK_FLAGS = -fuse-ld=lld -target x86_64-pc-win32 -Wl,-machine:x64 -fmsc-version=1924 \
-    -L/Users/floris/Documents/WinLibs/Microsoft\ Visual\ Studio/2019/Community/VC/Tools/MSVC/14.24.28314/lib/x64/ \
-    -L/Users/floris/Documents/WinLibs/Windows\ Kits/10/Lib/10.0.18362.0/um/x64/ \
-    -L/Users/floris/Documents/WinLibs/Windows\ Kits/10/Lib/10.0.18362.0/ucrt/x64/ \
+    -L./.windows/MSVC/lib/x64 \
+    -L./.windows/um/lib/x64 \
+    -L./.windows/ucrt/lib/x64 \
     -nostdlib -lmsvcrt -Wno-msvc-not-found
 
 W_CFLAGS = \
-	-I/Users/floris/Documents/WinLibs/SDL2-2.0.10/include/ \
-	-I/Users/floris/Documents/WinLibs/SDL2_ttf-2.0.15/include/
+	-I./.windows/SDL2/include \
+	-I./.windows/SDL2_ttf/include
 
 CFLAGS = -D_THREAD_SAFE -Wall -Wextra -g $(W_CFLAGS)
 
 W_LPATH = \
-	-L/Users/floris/Documents/WinLibs/SDL2-2.0.10/lib/x64/ \
-	-L/Users/floris/Documents/WinLibs/SDL2_ttf-2.0.15/lib/x64/ \
+	-L./.windows/SDL2/lib/x64 \
+	-L./.windows/SDL2_ttf/lib/x64 \
 	-Xlinker /subsystem:windows
 	
 LPATH = $(W_LPATH) -lSDL2main -lSDL2 -lSDL2_ttf

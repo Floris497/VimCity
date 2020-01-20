@@ -1,5 +1,8 @@
 # Make file for VimCity
 
+# export PATH := $(shell brew --prefix llvm)/bin:$(PATH)
+export PATH := /usr/local/opt/llvm/bin:$(PATH)
+
 NAME=vimcity.exe
 
 WINFLAGS = \
@@ -61,16 +64,30 @@ OBJS = $(SRCS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -o $(NAME) $(OBJS) $(CFLAGS)  $(W_LINK_FLAGS) $(LPATH)
+	$(CC) -o $(NAME) $(OBJS) $(CFLAGS) $(W_LINK_FLAGS) $(LPATH)
 
 %.o: %.c $(HEADERS)
 	@$(CC) -o $@ -c $< $(CFLAGS) $(WINFLAGS)
 	@echo CC: $<
 
+zip: vimcity.zip
+
+vimcity.zip: $(NAME)
+	rm -rf ./bundle ./vimcity.zip
+	mkdir ./bundle
+	cp ./.windows/SDL2/lib/x64/*.dll ./bundle/
+	cp ./.windows/SDL2_ttf/lib/x64/*.dll ./bundle/
+	cp $(NAME) ./bundle/
+	zip -rj vimcity.zip ./bundle/*
+	rm -rf ./bundle
+
 clean:
 	rm -rf $(OBJS)
+	rm -rf vimcity.pdb
+	rm -rf ./bundle
 
 fclean: clean
 	rm -rf $(NAME)
+	rm -rf vimcity.zip
 
 re: fclean all

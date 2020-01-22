@@ -41,6 +41,8 @@ HEADERS = $(wildcard *.h)
 SRCS = $(wildcard *.c)
 OBJS := $(addprefix $(BUILD_DIR)/,$(patsubst %.c,%.o,$(SRCS)))
 
+.PHONY: all clean fclean re zip
+
 all: $(NAME)
 
 $(BUILD_DIR)/%.o: %.c $(HEADERS)

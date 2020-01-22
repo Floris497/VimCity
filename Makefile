@@ -13,7 +13,7 @@ HEADERS = $(wildcard *.h)
 SRCS = $(wildcard *.c)
 OBJS := $(addprefix $(BUILD_DIR)/,$(patsubst %.c,%.o,$(SRCS)))
 
-.PHONY: xcode
+.PHONY: all bundle clean fclean re
 
 all: $(NAME)
 

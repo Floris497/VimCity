@@ -11,7 +11,12 @@ HEADERS = $(wildcard *.h)
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 
+.PHONY: xcode
+
 all: $(NAME)
+
+xcode:
+	@xcodebuild -scheme VimCity-app SYMROOT=./build/macos build
 
 $(NAME): $(OBJS)
 	$(CC) -o $(NAME) $(OBJS) $(CFLAGS) $(LPATH)

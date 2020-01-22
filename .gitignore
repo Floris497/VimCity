@@ -2,3 +2,4 @@
 vimcity
 .DS_Store
 /.windows
+/build

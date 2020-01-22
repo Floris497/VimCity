@@ -1,6 +1,8 @@
 # Make file for VimCity
 
-NAME=vimcity
+BUILD_DIR := build/generic
+
+NAME=$(BUILD_DIR)/vimcity
 
 CFLAGS = -I/usr/local/include/SDL2 -D_THREAD_SAFE -Wall -Wextra -g # -Werror
 
@@ -9,19 +11,21 @@ LPATH = -L/usr/local/lib -lSDL2 -lSDL2_ttf
 HEADERS = $(wildcard *.h)
 
 SRCS = $(wildcard *.c)
-OBJS = $(SRCS:.c=.o)
+OBJS := $(addprefix $(BUILD_DIR)/,$(patsubst %.c,%.o,$(SRCS)))
 
 .PHONY: xcode
 
 all: $(NAME)
 
-xcode:
+bundle:
 	@xcodebuild -scheme VimCity-app SYMROOT=./build/macos build
 
 $(NAME): $(OBJS)
+	@mkdir -p $(@D)
 	$(CC) -o $(NAME) $(OBJS) $(CFLAGS) $(LPATH)
 
-%.o: %.c $(HEADERS)
+$(BUILD_DIR)/%.o: %.c $(HEADERS)
+	@mkdir -p $(@D)
 	@$(CC) -o $@ -c $< $(CFLAGS)
 	@echo CC: $<
 

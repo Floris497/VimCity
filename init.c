@@ -19,6 +19,8 @@ void init_graphics(t_screen *screenState)
     screenState->FPSHistory = circularList(10);
 #ifdef _WIN32
     screenState->font = TTF_OpenFont("C:/Users/MacBook Air/Desktop/UbuntuMono-R.ttf", 20);
+#elif BUNDLE
+    screenState->font = TTF_OpenFont("UbuntuMono-R.ttf", 20);
 #else
     screenState->font = TTF_OpenFont("./assets/fonts/UbuntuMono-R.ttf", 20);
 #endif

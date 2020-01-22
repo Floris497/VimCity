@@ -3,3 +3,5 @@ vimcity
 .DS_Store
 /.windows
 /build
+*.xcuserstate
+*.xcodeproj/xcuserdata

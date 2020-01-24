@@ -13,6 +13,8 @@
 		7006DB4423D3A8BE0055F51C /* gameloop.c in Sources */ = {isa = PBXBuildFile; fileRef = 70CA83D023C7BE3E00C79044 /* gameloop.c */; };
 		7006DB4F23D4A7E30055F51C /* init.c in Sources */ = {isa = PBXBuildFile; fileRef = 7006DB4E23D4A7E30055F51C /* init.c */; };
 		7006DB5223D4A8910055F51C /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7006DB5123D4A8910055F51C /* utils.c */; };
+		704BD13E23DB7B9400557EEE /* renderUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 704BD13C23DB7B9400557EEE /* renderUtils.c */; };
+		704BD13F23DB7B9400557EEE /* renderUtils.c in Sources */ = {isa = PBXBuildFile; fileRef = 704BD13C23DB7B9400557EEE /* renderUtils.c */; };
 		70AF4AB723D86259005B4423 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 70CA83D323C7BE3E00C79044 /* main.c */; };
 		70AF4AB823D86259005B4423 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 7006DB5123D4A8910055F51C /* utils.c */; };
 		70AF4AB923D86259005B4423 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = 7006DB3423D39F6A0055F51C /* text.c */; };
@@ -59,6 +61,8 @@
 		7006DB4E23D4A7E30055F51C /* init.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = init.c; sourceTree = "<group>"; };
 		7006DB5023D4A8910055F51C /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		7006DB5123D4A8910055F51C /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
+		704BD13C23DB7B9400557EEE /* renderUtils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = renderUtils.c; sourceTree = "<group>"; };
+		704BD13D23DB7B9400557EEE /* renderUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderUtils.h; sourceTree = "<group>"; };
 		70AF4AA323D86203005B4423 /* VimCity-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "VimCity-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70AF4AC423D866CD005B4423 /* UbuntuMono-R.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "UbuntuMono-R.ttf"; path = "assets/fonts/UbuntuMono-R.ttf"; sourceTree = "<group>"; };
 		70CA83CE23C7BE3E00C79044 /* list.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = list.c; sourceTree = "<group>"; };
@@ -113,6 +117,8 @@
 			isa = PBXGroup;
 			children = (
 				70AF4AC423D866CD005B4423 /* UbuntuMono-R.ttf */,
+				704BD13C23DB7B9400557EEE /* renderUtils.c */,
+				704BD13D23DB7B9400557EEE /* renderUtils.h */,
 				70CA83D523C7BE3E00C79044 /* vimcity.h */,
 				70CA83D323C7BE3E00C79044 /* main.c */,
 				7006DB5023D4A8910055F51C /* utils.h */,
@@ -240,6 +246,7 @@
 			files = (
 				7006DB4F23D4A7E30055F51C /* init.c in Sources */,
 				7006DB4123D3A8BB0055F51C /* text.c in Sources */,
+				704BD13E23DB7B9400557EEE /* renderUtils.c in Sources */,
 				7006DB4423D3A8BE0055F51C /* gameloop.c in Sources */,
 				7006DB5223D4A8910055F51C /* utils.c in Sources */,
 				7006DB4223D3A8BB0055F51C /* main.c in Sources */,
@@ -253,6 +260,7 @@
 			files = (
 				70AF4AB723D86259005B4423 /* main.c in Sources */,
 				70AF4AB823D86259005B4423 /* utils.c in Sources */,
+				704BD13F23DB7B9400557EEE /* renderUtils.c in Sources */,
 				70AF4ABB23D86259005B4423 /* gameloop.c in Sources */,
 				70AF4ABC23D86259005B4423 /* init.c in Sources */,
 				70AF4AB923D86259005B4423 /* text.c in Sources */,

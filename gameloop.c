@@ -88,15 +88,19 @@ int gameLoop(t_screen *screen, t_game *gameState) {
             case SDL_KEYDOWN:
                 switch(e.key.keysym.sym) {
                     case SDLK_h:
+                    case SDLK_LEFT:
                        moveCursor(gameState, -1, 0); 
                        break;
                     case SDLK_j:
+                    case SDLK_DOWN:
                        moveCursor(gameState, 0, 1); 
                        break;
                     case SDLK_k:
+                    case SDLK_UP:
                        moveCursor(gameState, 0, -1); 
                        break;
                     case SDLK_l:
+                    case SDLK_RIGHT:
                        moveCursor(gameState, 1, 0); 
                        break;
                     case SDLK_r:

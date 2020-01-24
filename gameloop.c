@@ -80,6 +80,7 @@ void buildRoad(Game *gameState) {
 int gameLoop(Screen *screen, Game *gameState) {
     SDL_Event e;
     bool keepRunning = true;
+    Tile tile;
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
             case SDL_QUIT:
@@ -105,6 +106,15 @@ int gameLoop(Screen *screen, Game *gameState) {
                        break;
                     case SDLK_r:
                        buildRoad(gameState);
+                       break;
+                    case SDLK_c:
+                       tile = gameState->map.tiles[gameState->cursorX][gameState->cursorY];
+                       if(tile.type >= TILE_ROAD_LEFT 
+                               && tile.type <= TILE_ROAD_RIGHT
+                               && tile.car==NULL) {
+                            addCar(gameState, gameState->cursorX, gameState->cursorY);
+                       }
+                       break;
                     default:
                         ;
                 }
@@ -162,6 +172,14 @@ int draw(Screen *screen, Game *gameState) {
             };
         }
     }
+    //draw cars
+    for(int i = 0; i < gameState->nCars; i++) {
+        Car car = gameState->carList[i];
+        SDL_SetRenderDrawColor(screen->renderer, 0xFF, 0,0,0xFF); 
+        SDL_Rect carRect = {car.x*TILE_SIZE+5, car.y*TILE_SIZE+5, 10, 10};
+        SDL_RenderFillRect(screen->renderer, &carRect);
+    }
+
     //draw cursor
     SDL_Rect cursorOutline = {gameState->cursorX *TILE_SIZE, gameState->cursorY * TILE_SIZE, TILE_SIZE, TILE_SIZE};
     int cursorXDir = gameState->cursorXDir;
@@ -188,7 +206,15 @@ int draw(Screen *screen, Game *gameState) {
 }
 
 void addCar(Game *gameState, int x, int y) {
-    
+    Car *carList = (Car *)malloc(sizeof(Car) * (gameState->nCars+1));
+    if(gameState->nCars !=0 ) {
+        memcpy(carList, gameState->carList, sizeof(Car)*gameState->nCars);
+    }
+    carList[gameState->nCars].x = x;
+    carList[gameState->nCars].y = y;
+    gameState->map.tiles[x][y].car = &carList[gameState->nCars];
+    gameState->nCars++;
+    gameState->carList = carList;
 }
 
 void removeCar(Game *gameState) {

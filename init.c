@@ -30,13 +30,20 @@ void init_graphics(t_screen *screenState)
 void init_game(t_game *gameState) {
     int w = 80;
     int h = 20;
-    gameState->map.field = (int **)malloc(w * sizeof(int*));
+    gameState->map.tiles = (t_tile **)malloc(w * sizeof(t_tile*));
     for(int i = 0; i < w; i++) {
-        gameState -> map.field[i] = (int *) malloc(h * sizeof(int));
+        gameState -> map.tiles[i] = (t_tile *) malloc(h * sizeof(t_tile));
         for(int j = 0; j < h; j++) {
-            gameState->map.field[i][j] = rand()%4;
+            gameState->map.tiles[i][j].type = 0;
+            gameState->map.tiles[i][j].car = NULL;
         }
     }
     gameState->map.width = w;
     gameState->map.height = h;
+    gameState->cursorX = 0;
+    gameState->cursorY = 0;
+    gameState->prevCursorX = 0;
+    gameState->prevCursorY = 0;
+    gameState->cursorXDir = 1;
+    gameState->cursorYDir = 0;
 }

@@ -16,6 +16,7 @@ SDL_Texture *createTextTexture( const char* string, t_screen *screenState, t_tex
     SDL_Surface *surface = TTF_RenderUTF8_Blended(screenState->font, string, color);
 
     SDL_Texture *texture = SDL_CreateTextureFromSurface(screenState->renderer, surface);
+    textureInfo->texture = texture;
 
     SDL_QueryTexture(texture,
                      NULL,

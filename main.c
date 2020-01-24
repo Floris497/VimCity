@@ -23,10 +23,8 @@ int main(int argc, char* args[]) {
         SDL_Log("SDL_ttf not loaded");
     } else {
 
-        // init Graphics
         init_graphics(&screenState);
 
-        //Create window
         window = SDL_CreateWindow("VimCity Pre Alpha 0.0.0",
                                   SDL_WINDOWPOS_UNDEFINED,
                                   SDL_WINDOWPOS_UNDEFINED,
@@ -49,7 +47,6 @@ int main(int argc, char* args[]) {
             while (ret) {
                 now = SDL_GetPerformanceCounter();
 
-                // run game loop
                 ret = gameLoop(&screenState, &gameState);
 
                 taken = SDL_GetPerformanceCounter() - now;

@@ -28,18 +28,16 @@ void moveCursor(Game *gameState, int xDir, int yDir) {
     gameState->prevCursorY = gameState->cursorY;
     gameState->cursorX += xDir;
     gameState->cursorY += yDir;
-    if(gameState->cursorX < 0) {
+    
+    if(gameState->cursorX < 0)
         gameState->cursorX = 0;
-    }
-    if(gameState->cursorY < 0) {
+    if(gameState->cursorY < 0)
         gameState->cursorY = 0;
-    }
-    if(gameState->cursorX >= w) {
+    if(gameState->cursorX >= w)
         gameState->cursorX = w-1;
-    }
-    if(gameState->cursorY >= h) {
+    if(gameState->cursorY >= h)
         gameState->cursorY = h-1;
-    }
+
     int cursorXDir = gameState->cursorX - gameState->prevCursorX;
     int cursorYDir = gameState->cursorY - gameState->prevCursorY;
     if(abs(cursorXDir) > abs(cursorYDir)) {
@@ -55,18 +53,10 @@ void moveCursor(Game *gameState, int xDir, int yDir) {
 
 //maps a direction to the vim direction keys (hjkl) = (1234) = (LEFT DOWN UP RIGHT)
 int directionToVim(int xDir, int yDir) {
-    if(xDir < 0) {
-        return 0;
-    }
-    if(yDir > 0) {
-        return 1;
-    }
-    if(yDir < 0) {
-        return 2;
-    }
-    if(xDir > 0) {
-        return 3;
-    }
+    if(xDir < 0) { return 0; }
+    if(yDir > 0) { return 1; }
+    if(yDir < 0) { return 2; }
+    if(xDir > 0) { return 3; }
     return -1;
 }
 

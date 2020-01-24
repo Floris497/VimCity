@@ -10,7 +10,7 @@
 #include "init.h"
 #include "list.h"
 
-void init_graphics(t_screen *screenState)
+void init_graphics(Screen *screenState)
 {
     screenState->width = 1280;
     screenState->height = 720;
@@ -27,12 +27,12 @@ void init_graphics(t_screen *screenState)
 
 }
 
-void init_game(t_game *gameState) {
+void init_game(Game *gameState) {
     int w = 80;
     int h = 20;
-    gameState->map.tiles = (t_tile **)malloc(w * sizeof(t_tile*));
+    gameState->map.tiles = (Tile **)malloc(w * sizeof(Tile*));
     for(int i = 0; i < w; i++) {
-        gameState -> map.tiles[i] = (t_tile *) malloc(h * sizeof(t_tile));
+        gameState -> map.tiles[i] = (Tile *) malloc(h * sizeof(Tile));
         for(int j = 0; j < h; j++) {
             gameState->map.tiles[i][j].type = 0;
             gameState->map.tiles[i][j].car = NULL;

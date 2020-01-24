@@ -10,7 +10,7 @@
 
 #include "vimcity.h"
 
-SDL_Texture *createTextTexture( const char* string, t_screen *screenState, t_text *textureInfo)
+SDL_Texture *createTextTexture( const char* string, Screen *screenState, Text *textureInfo)
 {
     SDL_Color color = { 255, 255, 255 , 0};
     SDL_Surface *surface = TTF_RenderUTF8_Blended(screenState->font, string, color);

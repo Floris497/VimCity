@@ -13,7 +13,7 @@
 
 #include "vimcity.h"
 
-void init_graphics(t_screen *screenState);
-void init_game(t_game *gameState);
+void init_graphics(Screen *screenState);
+void init_game(Game *gameState);
 
 #endif /* init_h */

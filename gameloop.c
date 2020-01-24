@@ -14,14 +14,14 @@
 #include "utils.h"
 #include "renderUtils.h"
 
-t_color colors[] = {
+SDL_Color colors[] = {
     {0x00, 0x00 , 0x00, 0xFF}, // black
     {0xFF, 0x00 , 0x00, 0xFF}, // red
     {0x00, 0xFF , 0x00, 0xFF}, // green
     {0x00, 0x00 , 0xFF, 0xFF}, // blue
 };
 
-void moveCursor(t_game *gameState, int xDir, int yDir) {
+void moveCursor(Game *gameState, int xDir, int yDir) {
     int w = gameState->map.width;
     int h = gameState->map.height;
     gameState->prevCursorX = gameState->cursorX;
@@ -70,14 +70,14 @@ int directionToVim(int xDir, int yDir) {
     return -1;
 }
 
-void buildRoad(t_game *gameState) {
+void buildRoad(Game *gameState) {
     int cursorX = gameState->cursorX;
     int cursorY = gameState->cursorY;
     int type = TILE_ROAD_LEFT + directionToVim(gameState->cursorXDir, gameState->cursorYDir);
     gameState->map.tiles[cursorX][cursorY].type = type;
 }
 
-int gameLoop(t_screen *screen, t_game *gameState) {
+int gameLoop(Screen *screen, Game *gameState) {
     SDL_Event e;
     bool keepRunning = true;
     while (SDL_PollEvent(&e)) {
@@ -105,6 +105,8 @@ int gameLoop(t_screen *screen, t_game *gameState) {
                        break;
                     case SDLK_r:
                        buildRoad(gameState);
+                    default:
+                        ;
                 }
                 break;
         }
@@ -132,7 +134,7 @@ void drawRoad(SDL_Renderer *renderer, int x, int y, int xDir, int yDir, int tile
     drawLineOnTile(renderer, x, y, xDir, yDir, tileSize);
 }
 
-int draw(t_screen *screen, t_game *gameState) {
+int draw(Screen *screen, Game *gameState) {
     SDL_SetRenderDrawColor(screen->renderer, 0,0,0,0);
     SDL_RenderClear(screen->renderer);
     int w = gameState -> map.width;
@@ -174,7 +176,7 @@ int draw(t_screen *screen, t_game *gameState) {
 #ifdef _WIN32
     SDL_Log("No FONTS in Windows..");
 #else
-    t_text textureInfo;
+    Text textureInfo;
     textureInfo.color = (SDL_Color){255,255,255,200};
     SDL_Texture *texture = createTextTexture(getFPSText(screen->FPSHistory, 60), screen, &textureInfo);
     SDL_RenderCopy(screen->renderer, texture, NULL, &textureInfo.rect);
@@ -185,11 +187,11 @@ int draw(t_screen *screen, t_game *gameState) {
     return true;
 }
 
-void addCar(t_game *gameState, int x, int y) {
+void addCar(Game *gameState, int x, int y) {
     
 }
 
-void removeCar(t_game *gameState) {
+void removeCar(Game *gameState) {
     
 }
 

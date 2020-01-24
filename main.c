@@ -14,8 +14,8 @@
 
 int main(int argc, char* args[]) {
     SDL_Window      *window = NULL;
-    t_game          gameState = {};
-    t_screen        screenState = {};
+    Game            gameState = {};
+    Screen        screenState = {};
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         SDL_Log("SDL not loaded");

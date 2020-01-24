@@ -15,28 +15,33 @@
 #include "list.h"
 #include <stdbool.h>
 
+
 //define tile types
-#define TILE_EMPTY 0
-#define TILE_ROAD_LEFT 1
-#define TILE_ROAD_DOWN 2
-#define TILE_ROAD_UP 3
-#define TILE_ROAD_RIGHT 4
+typedef enum TileType TileType;
 
-typedef struct s_game t_game;
-typedef struct s_map t_map;
-typedef struct s_tile t_tile;
-typedef struct s_text t_text;
-typedef struct s_screen t_screen;
-typedef struct s_car t_car;
-typedef struct s_color t_color;
+enum e_tileType
+{
+    TILE_EMPTY,
+    TILE_ROAD_LEFT,
+    TILE_ROAD_DOWN,
+    TILE_ROAD_UP,
+    TILE_ROAD_RIGHT,
+};
 
-struct s_text {
+typedef struct Game Game;
+typedef struct Map Map;
+typedef struct Tile Tile;
+typedef struct Text Text;
+typedef struct Screen Screen;
+typedef struct Car Car;
+
+struct Text {
     SDL_Color color;
     SDL_Texture *texture;
     SDL_Rect rect;
 };
 
-struct s_screen {
+struct Screen {
     int width; 
     int height;
     SDL_Renderer *renderer;
@@ -45,14 +50,7 @@ struct s_screen {
     t_list *FPSHistory;
 };
 
-struct s_color {
-    Uint8 r;
-    Uint8 g;
-    Uint8 b;
-    Uint8 a;
-};
-
-struct s_car {
+struct Car {
     //discrete position
     int x;
     int y;
@@ -61,19 +59,19 @@ struct s_car {
     float fy;
 };
 
-struct s_tile {
+struct Tile {
     int type;
-    t_car *car;
+    Car *car;
 };
 
-struct s_map {
-    t_tile **tiles;
+struct Map {
+    Tile **tiles;
     int width;
     int height;
 };
 
-struct s_game {
-    t_map map;
+struct Game {
+    Map map;
     int cursorX;
     int cursorY;
     int prevCursorX;
@@ -82,23 +80,23 @@ struct s_game {
     int cursorYDir;
 
     int nCars;
-    t_car *carList;
+    Car *carList;
 };
 
-void moveCursor(t_game*, int, int);
+void moveCursor(Game*, int, int);
 
-void init_game(t_game *gameState);
+void init_game(Game *gameState);
 
-int draw(t_screen *screen, t_game *gameState);
+int draw(Screen *screen, Game *gameState);
 
-int gameLoop(t_screen* screen, t_game *gameState);
+int gameLoop(Screen* screen, Game *gameState);
 
-void buildRoad(t_game *gameState);
+void buildRoad(Game *gameState);
 
-SDL_Texture *createTextTexture( const char* string, t_screen *screenState, t_text *textureInfo);
+SDL_Texture *createTextTexture( const char* string, Screen *screenState, Text *textureInfo);
 
-void addCar(t_game *gameState, int x, int y);
+void addCar(Game *gameState, int x, int y);
 
-void removeCar(t_game *gameState);
+void removeCar(Game *gameState);
 
 #endif /* vimcity_h */

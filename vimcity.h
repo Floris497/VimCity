@@ -102,4 +102,6 @@ void addCar(Game *gameState, int x, int y);
 
 void removeCar(Game *gameState);
 
+int directionToVim(int xDir, int yDir);
+
 #endif /* vimcity_h */

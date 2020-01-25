@@ -27,9 +27,21 @@ void init_graphics(Screen *screenState)
 
 }
 
+void createRoad(Game *gameState, int fromX, int fromY, int xDir, int yDir, int length) {
+    int type = directionToVim(xDir, yDir) + TILE_ROAD_LEFT;
+    for(int i = 0; i < length; i++) {
+        int x = fromX + xDir*i;
+        int y = fromY + yDir*i;
+        gameState->map.tiles[x][y].type = type;
+        if(rand()%8 == 0) {
+            addCar(gameState, x, y);
+        }
+    }
+}
+
 void init_game(Game *gameState) {
-    int w = 80;
-    int h = 20;
+    int w = 60;
+    int h = 30;
     gameState->map.tiles = (Tile **)malloc(w * sizeof(Tile*));
     for(int i = 0; i < w; i++) {
         gameState -> map.tiles[i] = (Tile *) malloc(h * sizeof(Tile));
@@ -46,4 +58,10 @@ void init_game(Game *gameState) {
     gameState->prevCursorY = 0;
     gameState->cursorXDir = 1;
     gameState->cursorYDir = 0;
+    createRoad(gameState, 0, 0, 0, 1, h);
+    createRoad(gameState, 0, h-1, 1, 0, w);
+    createRoad(gameState, w-1, h-1, 0, -1, h);
+    createRoad(gameState, w-1, 0, -1, 0, w);
+    createRoad(gameState, w/2, h-1, 0, -1, h);
+    createRoad(gameState, w-1, h/2, -1, 0, w);
 }

@@ -60,6 +60,27 @@ int directionToVim(int xDir, int yDir) {
     return -1;
 }
 
+void vimToDirection(int vimCode, int *xDir, int *yDir) {
+    switch(vimCode) {
+        case 0:
+            (*xDir) = -1;
+            (*yDir) = 0;
+            break;
+        case 1:
+            (*xDir) = 0;
+            (*yDir) = 1;
+            break;
+        case 2:
+            (*xDir) = 0;
+            (*yDir) = -1;
+            break;
+        case 3:
+            (*xDir) = 1;
+            (*yDir) = 0;
+            break;
+    }
+}
+
 void buildRoad(Game *gameState) {
     int cursorX = gameState->cursorX;
     int cursorY = gameState->cursorY;
@@ -112,9 +133,93 @@ int gameLoop(Screen *screen, Game *gameState) {
         }
 
     }    
+    gameTick(gameState);
     draw(screen, gameState);
     return keepRunning;
 }
+
+bool isInBounds(Game *gameState, int x, int y) {
+    return x >= 0 && y >= 0 && x < gameState->map.width && y < gameState->map.height;
+}
+
+//assumes that tiles are in the direct neighbourhood
+bool canDrive(Game *gameState, int fromX, int fromY, int toX, int toY) {
+    if(isInBounds(gameState, toX, toY)) {
+        Tile *tile = &(gameState->map.tiles[toX][toY]);
+        if(tile->type >= TILE_ROAD_LEFT && tile->type <= TILE_ROAD_RIGHT) {
+            int toXDir = 0;
+            int toYDir = 0;
+            int fromXDir = 0;
+            int fromYDir = 0;
+            int vimCode = tile->type-TILE_ROAD_LEFT;
+            vimToDirection(vimCode, &toXDir, &toYDir);
+            vimCode = gameState->map.tiles[fromX][fromY].type - TILE_ROAD_LEFT;
+            vimToDirection(vimCode, &fromXDir, &fromYDir);
+            int dx = toX-fromX;
+            int dy = toY-fromY;
+            if((toXDir == dx && toYDir == dy)) {
+                return tile->car==NULL;
+            } else if(fromXDir== dx && fromYDir == dy 
+                    && fromXDir*toXDir + fromYDir*toYDir >= 0) {
+                return tile->car==NULL;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    } else {
+       return false; 
+    }
+}
+
+void gameTick(Game *gameState) {
+    for(int i = 0; i < gameState->nCars; i++) {
+        Car *car = &gameState->carList[i];
+        Tile *tile = &gameState->map.tiles[car->x][car->y];
+        int carXDir = 0;
+        int carYDir = 0;
+        vimToDirection(tile->type-TILE_ROAD_LEFT, &carXDir, &carYDir);
+        //Explore the neighbourhood and choose a direction
+        int leftX = car->x + carYDir;
+        int leftY = car->y - carXDir;
+        int forwardX = car->x + carXDir;
+        int forwardY = car->y + carYDir;
+        int rightX = car->x - carYDir;
+        int rightY = car->y + carXDir;
+        bool canMoveLeft = canDrive(gameState, car->x, car->y, leftX, leftY);
+        bool canMoveRight = canDrive(gameState, car->x, car->y, rightX, rightY);
+        bool canMoveForward = canDrive(gameState, car->x, car->y, forwardX, forwardY);
+        //hacky way to choose a random possible direction
+        int sum = canMoveLeft + canMoveRight + canMoveForward;
+        if(sum > 0) {
+            int chooseDir = random() % sum;
+            int counter = 0;
+            int toX = 0;
+            int toY = 0;
+            counter+=canMoveLeft;
+            if(counter > chooseDir) {
+                toX = leftX;
+                toY = leftY;
+            } else {
+                counter+=canMoveRight;
+                if(counter > chooseDir) {
+                    toX = rightX;
+                    toY = rightY;
+                } else {
+                    toX = forwardX;
+                    toY = forwardY;
+                }
+            }
+            gameState->map.tiles[toX][toY].car = car;
+            tile->car = NULL; 
+            car->x = toX;
+            car->y = toY;
+        }
+    }
+    gameState->tick++;
+}
+
 
 void drawLineOnTile(SDL_Renderer *renderer, int x, int y, int xDir, int yDir, int tileSize) {
     int cx = x*tileSize + tileSize/2;
@@ -126,11 +231,15 @@ void drawLineOnTile(SDL_Renderer *renderer, int x, int y, int xDir, int yDir, in
     drawArrow(renderer, fromX, fromY, toX, toY);
 }
 
-void drawRoad(SDL_Renderer *renderer, int x, int y, int xDir, int yDir, int tileSize) {
+void drawRoad(SDL_Renderer *renderer, Game *gameState, int x, int y, int xDir, int yDir, int tileSize) {
     SDL_Rect tileRect = {x * tileSize, y*tileSize, tileSize, tileSize};
     SDL_SetRenderDrawColor(renderer, 0x99, 0x99, 0x99, 0xFF);
     SDL_RenderFillRect(renderer, &tileRect);
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    if(gameState->map.tiles[x][y].car!=NULL) {
+        SDL_SetRenderDrawColor(renderer, 0x55, 0x55, 0xFF, 0xFF);
+    } else {
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    }
     drawLineOnTile(renderer, x, y, xDir, yDir, tileSize);
 }
 
@@ -148,16 +257,16 @@ int draw(Screen *screen, Game *gameState) {
                 case TILE_EMPTY: //nothing
                     break;
                 case TILE_ROAD_LEFT: //road
-                    drawRoad(screen->renderer, i, j, -1, 0, TILE_SIZE);
+                    drawRoad(screen->renderer, gameState, i, j, -1, 0, TILE_SIZE);
                     break;
                 case TILE_ROAD_UP:
-                    drawRoad(screen->renderer, i, j, 0, -1, TILE_SIZE);
+                    drawRoad(screen->renderer, gameState, i, j, 0, -1, TILE_SIZE);
                     break;
                 case TILE_ROAD_DOWN:
-                    drawRoad(screen->renderer, i, j, 0, 1, TILE_SIZE);
+                    drawRoad(screen->renderer, gameState, i, j, 0, 1, TILE_SIZE);
                     break;
                 case TILE_ROAD_RIGHT:
-                    drawRoad(screen->renderer, i, j, 1, 0,  TILE_SIZE);
+                    drawRoad(screen->renderer, gameState, i, j, 1, 0,  TILE_SIZE);
                     break;
             };
         }

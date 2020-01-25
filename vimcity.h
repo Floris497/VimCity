@@ -72,6 +72,7 @@ struct Map {
 
 struct Game {
     Map map;
+    long tick;
     int cursorX;
     int cursorY;
     int prevCursorX;
@@ -86,6 +87,8 @@ struct Game {
 void moveCursor(Game*, int, int);
 
 void init_game(Game *gameState);
+
+void gameTick(Game *gameState);
 
 int draw(Screen *screen, Game *gameState);
 

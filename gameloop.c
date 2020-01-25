@@ -86,6 +86,7 @@ void buildRoad(Game *gameState) {
     int cursorY = gameState->cursorY;
     int type = TILE_ROAD_LEFT + directionToVim(gameState->cursorXDir, gameState->cursorYDir);
     gameState->map.tiles[cursorX][cursorY].type = type;
+    moveCursor(gameState, gameState->cursorXDir, gameState->cursorYDir);
 }
 
 int gameLoop(Screen *screen, Game *gameState) {

@@ -10,4 +10,4 @@
 - Houses
 - Agents
 
-
+All decissions are made by actual agents. 

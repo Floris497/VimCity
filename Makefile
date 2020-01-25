@@ -37,5 +37,8 @@ fclean: clean
 
 run:
 	./$(NAME)
+	
+sign:
+	codesign -s - ./$(NAME)
 
 re: fclean all

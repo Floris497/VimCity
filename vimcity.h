@@ -28,6 +28,19 @@ enum e_tileType
     TILE_ROAD_RIGHT,
 };
 
+typedef enum e_inputAction InputAction;
+enum e_inputAction
+{
+    kActionNothing,
+    kActionLeft,
+    kActionDown,
+    kActionUp,
+    kActionRight,
+    kActionBuildRoad,
+    kActionBuildCar,
+    kActionLast,
+};
+
 typedef struct Game Game;
 typedef struct Map Map;
 typedef struct Tile Tile;
@@ -71,6 +84,7 @@ struct Map {
 };
 
 struct Game {
+    int *actionDownTicks;
     Map map;
     long tick;
     int cursorX;
@@ -103,5 +117,11 @@ void addCar(Game *gameState, int x, int y);
 void removeCar(Game *gameState);
 
 int directionToVim(int xDir, int yDir);
+
+InputAction getAction(SDL_Keycode key);
+
+void actionTriggered(Game *gameState, InputAction action, bool down);
+
+void updateInput(Game *gameState);
 
 #endif /* vimcity_h */

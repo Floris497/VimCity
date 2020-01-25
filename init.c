@@ -40,6 +40,11 @@ void createRoad(Game *gameState, int fromX, int fromY, int xDir, int yDir, int l
 }
 
 void init_game(Game *gameState) {
+    //input
+    gameState->actionDownTicks = (int *)malloc(sizeof(int) * kActionLast);
+    for(int i = 0; i < kActionLast; i++) {
+        gameState->actionDownTicks[i] = -1;
+    }
     int w = 60;
     int h = 30;
     gameState->map.tiles = (Tile **)malloc(w * sizeof(Tile*));

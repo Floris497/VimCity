@@ -89,51 +89,96 @@ void buildRoad(Game *gameState) {
     moveCursor(gameState, gameState->cursorXDir, gameState->cursorYDir);
 }
 
+InputAction getAction(SDL_Keycode key) {
+    InputAction action = kActionNothing;
+    switch(key) {
+        case SDLK_h:
+        case SDLK_LEFT:
+           action = kActionLeft;
+           break;
+        case SDLK_j:
+        case SDLK_DOWN:
+           action = kActionDown;
+           break;
+        case SDLK_k:
+        case SDLK_UP:
+           action = kActionUp;
+           break;
+        case SDLK_l:
+        case SDLK_RIGHT:
+           action = kActionRight;
+           break;
+        case SDLK_r:
+           action = kActionBuildRoad;
+           break;
+        case SDLK_c:
+           action = kActionBuildCar;
+           break;
+        default:
+            ;
+    } 
+    return action;
+}
+
+void actionTriggered(Game *gameState, InputAction action, bool down) {
+    SDL_Log("Action triggered : %d, down=%d\n", action, down);
+    if(down) {
+        gameState->actionDownTicks[action] = 1;
+    } else {
+        gameState->actionDownTicks[action] = -1;
+    }
+}
+
+void updateInput(Game *gameState) {
+    for(int i = 0; i < kActionLast; i++) {
+        //update action
+        if(gameState->actionDownTicks[i] > 15 || gameState->actionDownTicks[i]==1) {
+            SDL_Log("key down %d\n", i);
+            switch(i) {
+                case kActionLeft:
+                    moveCursor(gameState, -1, 0);
+                    break;
+                case kActionDown:
+                    moveCursor(gameState, 0, 1);
+                    break;
+                case kActionUp:
+                    moveCursor(gameState, 0, -1);
+                    break;
+                case kActionRight:
+                    moveCursor(gameState, 1, 0);
+                    break;
+                case kActionBuildRoad:
+                    buildRoad(gameState);
+                    break;
+                default:
+                    ;
+            }
+        }
+        //count
+        if(gameState->actionDownTicks[i] > 0) {
+            gameState->actionDownTicks[i]++;
+        }
+    }
+}
+
 int gameLoop(Screen *screen, Game *gameState) {
     SDL_Event e;
     bool keepRunning = true;
+    InputAction action;
     Tile tile;
     while (SDL_PollEvent(&e)) {
+        bool isKeyDown = false;
         switch (e.type) {
             case SDL_QUIT:
                 keepRunning = false;
                 break;
             case SDL_KEYDOWN:
-                switch(e.key.keysym.sym) {
-                    case SDLK_h:
-                    case SDLK_LEFT:
-                       moveCursor(gameState, -1, 0); 
-                       break;
-                    case SDLK_j:
-                    case SDLK_DOWN:
-                       moveCursor(gameState, 0, 1); 
-                       break;
-                    case SDLK_k:
-                    case SDLK_UP:
-                       moveCursor(gameState, 0, -1); 
-                       break;
-                    case SDLK_l:
-                    case SDLK_RIGHT:
-                       moveCursor(gameState, 1, 0); 
-                       break;
-                    case SDLK_r:
-                       buildRoad(gameState);
-                       break;
-                    case SDLK_c:
-                       tile = gameState->map.tiles[gameState->cursorX][gameState->cursorY];
-                       if(tile.type >= TILE_ROAD_LEFT 
-                               && tile.type <= TILE_ROAD_RIGHT
-                               && tile.car==NULL) {
-                            addCar(gameState, gameState->cursorX, gameState->cursorY);
-                       }
-                       break;
-                    default:
-                        ;
-                }
-                break;
+            case SDL_KEYUP:
+                action = getAction(e.key.keysym.sym);
+                actionTriggered(gameState, action, e.type==SDL_KEYDOWN);
         }
-
-    }    
+    } 
+    updateInput(gameState);
     gameTick(gameState);
     draw(screen, gameState);
     return keepRunning;
@@ -175,47 +220,49 @@ bool canDrive(Game *gameState, int fromX, int fromY, int toX, int toY) {
 }
 
 void gameTick(Game *gameState) {
-    for(int i = 0; i < gameState->nCars; i++) {
-        Car *car = &gameState->carList[i];
-        Tile *tile = &gameState->map.tiles[car->x][car->y];
-        int carXDir = 0;
-        int carYDir = 0;
-        vimToDirection(tile->type-TILE_ROAD_LEFT, &carXDir, &carYDir);
-        //Explore the neighbourhood and choose a direction
-        int leftX = car->x + carYDir;
-        int leftY = car->y - carXDir;
-        int forwardX = car->x + carXDir;
-        int forwardY = car->y + carYDir;
-        int rightX = car->x - carYDir;
-        int rightY = car->y + carXDir;
-        bool canMoveLeft = canDrive(gameState, car->x, car->y, leftX, leftY);
-        bool canMoveRight = canDrive(gameState, car->x, car->y, rightX, rightY);
-        bool canMoveForward = canDrive(gameState, car->x, car->y, forwardX, forwardY);
-        //hacky way to choose a random possible direction
-        int sum = canMoveLeft + canMoveRight + canMoveForward;
-        if(sum > 0) {
-            int chooseDir = random() % sum;
-            int counter = 0;
-            int toX = 0;
-            int toY = 0;
-            counter+=canMoveLeft;
-            if(counter > chooseDir) {
-                toX = leftX;
-                toY = leftY;
-            } else {
-                counter+=canMoveRight;
+    if(gameState->tick%5==0) {
+        for(int i = 0; i < gameState->nCars; i++) {
+            Car *car = &gameState->carList[i];
+            Tile *tile = &gameState->map.tiles[car->x][car->y];
+            int carXDir = 0;
+            int carYDir = 0;
+            vimToDirection(tile->type-TILE_ROAD_LEFT, &carXDir, &carYDir);
+            //Explore the neighbourhood and choose a direction
+            int leftX = car->x + carYDir;
+            int leftY = car->y - carXDir;
+            int forwardX = car->x + carXDir;
+            int forwardY = car->y + carYDir;
+            int rightX = car->x - carYDir;
+            int rightY = car->y + carXDir;
+            bool canMoveLeft = canDrive(gameState, car->x, car->y, leftX, leftY);
+            bool canMoveRight = canDrive(gameState, car->x, car->y, rightX, rightY);
+            bool canMoveForward = canDrive(gameState, car->x, car->y, forwardX, forwardY);
+            //hacky way to choose a random possible direction
+            int sum = canMoveLeft + canMoveRight + canMoveForward;
+            if(sum > 0) {
+                int chooseDir = random() % sum;
+                int counter = 0;
+                int toX = 0;
+                int toY = 0;
+                counter+=canMoveLeft;
                 if(counter > chooseDir) {
-                    toX = rightX;
-                    toY = rightY;
+                    toX = leftX;
+                    toY = leftY;
                 } else {
-                    toX = forwardX;
-                    toY = forwardY;
+                    counter+=canMoveRight;
+                    if(counter > chooseDir) {
+                        toX = rightX;
+                        toY = rightY;
+                    } else {
+                        toX = forwardX;
+                        toY = forwardY;
+                    }
                 }
+                gameState->map.tiles[toX][toY].car = car;
+                tile->car = NULL; 
+                car->x = toX;
+                car->y = toY;
             }
-            gameState->map.tiles[toX][toY].car = car;
-            tile->car = NULL; 
-            car->x = toX;
-            car->y = toY;
         }
     }
     gameState->tick++;
@@ -286,7 +333,7 @@ int draw(Screen *screen, Game *gameState) {
     int cursorYDir = gameState->cursorYDir;
     float cx = cursorOutline.x + cursorOutline.w/2;
     float cy = cursorOutline.y + cursorOutline.h/2;
-    SDL_SetRenderDrawColor(screen->renderer, 0x99, 0x99, 0x99, 0xFF);
+    SDL_SetRenderDrawColor(screen->renderer, 0x99, 0x99, 0xFF, 0xFF);
     SDL_RenderDrawRect(screen->renderer, &cursorOutline);
     drawArrow(screen->renderer, cx - cursorXDir*cursorOutline.w/2, cy - cursorYDir*cursorOutline.h/2,
             cx + cursorXDir*cursorOutline.w/2, cy + cursorYDir*cursorOutline.h/2);

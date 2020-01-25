@@ -13,7 +13,7 @@ HEADERS = $(wildcard *.h)
 SRCS = $(wildcard *.c)
 OBJS := $(addprefix $(BUILD_DIR)/,$(patsubst %.c,%.o,$(SRCS)))
 
-.PHONY: all bundle clean fclean re
+.PHONY: all bundle clean fclean re run
 
 all: $(NAME)
 
@@ -34,5 +34,8 @@ clean:
 
 fclean: clean
 	rm -rf $(NAME)
+
+run:
+	./$(NAME)
 
 re: fclean all

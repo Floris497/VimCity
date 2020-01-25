@@ -132,7 +132,7 @@ void actionTriggered(Game *gameState, InputAction action, bool down) {
 void updateInput(Game *gameState) {
     for(int i = 0; i < kActionLast; i++) {
         //update action
-        if(gameState->actionDownTicks[i] > 15 || gameState->actionDownTicks[i]==1) {
+        if((gameState->actionDownTicks[i] > 15 && gameState->actionDownTicks[i]%2==0) || gameState->actionDownTicks[i]==1) {
             SDL_Log("key down %d\n", i);
             switch(i) {
                 case kActionLeft:

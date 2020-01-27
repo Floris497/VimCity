@@ -16,20 +16,20 @@
 #include <stdbool.h>
 
 
-//define tile types
+// Enums
 typedef enum TileType TileType;
+typedef enum InputAction InputAction;
 
-enum e_tileType
+enum TileType
 {
-    TILE_EMPTY,
-    TILE_ROAD_LEFT,
-    TILE_ROAD_DOWN,
-    TILE_ROAD_UP,
-    TILE_ROAD_RIGHT,
+    kTileEmpty,
+    kTileRoadLeft,
+    kTileRoadDown,
+    kTileRoadUp,
+    kTileRoadRight,
 };
 
-typedef enum e_inputAction InputAction;
-enum e_inputAction
+enum InputAction
 {
     kActionNothing,
     kActionLeft,
@@ -98,7 +98,7 @@ struct Game {
     Car *carList;
 };
 
-void moveCursor(Game*, int, int);
+void moveCursor(Game* gameState, int x, int y);
 
 void init_game(Game *gameState);
 
@@ -110,7 +110,7 @@ int gameLoop(Screen* screen, Game *gameState);
 
 void buildRoad(Game *gameState);
 
-SDL_Texture *createTextTexture( const char* string, Screen *screenState, Text *textureInfo);
+SDL_Texture *createTextTexture(const char* string, Screen *screenState, Text *textureInfo);
 
 void addCar(Game *gameState, int x, int y);
 

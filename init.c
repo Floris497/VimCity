@@ -28,7 +28,7 @@ void init_graphics(Screen *screenState)
 }
 
 void createRoad(Game *gameState, int fromX, int fromY, int xDir, int yDir, int length) {
-    int type = directionToVim(xDir, yDir) + TILE_ROAD_LEFT;
+    int type = directionToVim(xDir, yDir) + kTileRoadLeft;
     for(int i = 0; i < length; i++) {
         int x = fromX + xDir*i;
         int y = fromY + yDir*i;

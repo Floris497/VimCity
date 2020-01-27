@@ -84,7 +84,7 @@ void vimToDirection(int vimCode, int *xDir, int *yDir) {
 void buildRoad(Game *gameState) {
     int cursorX = gameState->cursorX;
     int cursorY = gameState->cursorY;
-    int type = TILE_ROAD_LEFT + directionToVim(gameState->cursorXDir, gameState->cursorYDir);
+    int type = kTileRoadLeft + directionToVim(gameState->cursorXDir, gameState->cursorYDir);
     gameState->map.tiles[cursorX][cursorY].type = type;
     moveCursor(gameState, gameState->cursorXDir, gameState->cursorYDir);
 }
@@ -115,8 +115,8 @@ InputAction getAction(SDL_Keycode key) {
            action = kActionBuildCar;
            break;
         default:
-            ;
-    } 
+			action = kActionNothing;
+    }
     return action;
 }
 
@@ -192,14 +192,14 @@ bool isInBounds(Game *gameState, int x, int y) {
 bool canDrive(Game *gameState, int fromX, int fromY, int toX, int toY) {
     if(isInBounds(gameState, toX, toY)) {
         Tile *tile = &(gameState->map.tiles[toX][toY]);
-        if(tile->type >= TILE_ROAD_LEFT && tile->type <= TILE_ROAD_RIGHT) {
+        if(tile->type >= kTileRoadLeft && tile->type <= kTileRoadRight) {
             int toXDir = 0;
             int toYDir = 0;
             int fromXDir = 0;
             int fromYDir = 0;
-            int vimCode = tile->type-TILE_ROAD_LEFT;
+            int vimCode = tile->type-kTileRoadLeft;
             vimToDirection(vimCode, &toXDir, &toYDir);
-            vimCode = gameState->map.tiles[fromX][fromY].type - TILE_ROAD_LEFT;
+            vimCode = gameState->map.tiles[fromX][fromY].type - kTileRoadLeft;
             vimToDirection(vimCode, &fromXDir, &fromYDir);
             int dx = toX-fromX;
             int dy = toY-fromY;
@@ -226,7 +226,7 @@ void gameTick(Game *gameState) {
             Tile *tile = &gameState->map.tiles[car->x][car->y];
             int carXDir = 0;
             int carYDir = 0;
-            vimToDirection(tile->type-TILE_ROAD_LEFT, &carXDir, &carYDir);
+            vimToDirection(tile->type-kTileRoadLeft, &carXDir, &carYDir);
             //Explore the neighbourhood and choose a direction
             int leftX = car->x + carYDir;
             int leftY = car->y - carXDir;
@@ -302,18 +302,18 @@ int draw(Screen *screen, Game *gameState) {
         for(int j = 0; j < h; j++) {
             int tileType = gameState -> map.tiles[i][j].type;
             switch(tileType) {
-                case TILE_EMPTY: //nothing
+                case kTileEmpty: //nothing
                     break;
-                case TILE_ROAD_LEFT: //road
+                case kTileRoadLeft: //road
                     drawRoad(screen->renderer, gameState, i, j, -1, 0, TILE_SIZE);
                     break;
-                case TILE_ROAD_UP:
+                case kTileRoadUp:
                     drawRoad(screen->renderer, gameState, i, j, 0, -1, TILE_SIZE);
                     break;
-                case TILE_ROAD_DOWN:
+                case kTileRoadDown:
                     drawRoad(screen->renderer, gameState, i, j, 0, 1, TILE_SIZE);
                     break;
-                case TILE_ROAD_RIGHT:
+                case kTileRoadRight:
                     drawRoad(screen->renderer, gameState, i, j, 1, 0,  TILE_SIZE);
                     break;
             };

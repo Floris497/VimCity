@@ -33,9 +33,6 @@ void createRoad(Game *gameState, int fromX, int fromY, int xDir, int yDir, int l
         int x = fromX + xDir*i;
         int y = fromY + yDir*i;
         gameState->map.tiles[x][y].type = type;
-        if(rand()%8 == 0) {
-            addCar(gameState, x, y);
-        }
     }
 }
 
@@ -55,12 +52,11 @@ void init_game(Game *gameState) {
             gameState->map.tiles[i][j].car = NULL;
         }
     }
+    gameState->tileSize = 20;
     gameState->map.width = w;
     gameState->map.height = h;
     gameState->cursorX = 0;
     gameState->cursorY = 0;
-    gameState->prevCursorX = 0;
-    gameState->prevCursorY = 0;
     gameState->cursorXDir = 1;
     gameState->cursorYDir = 0;
     createRoad(gameState, 0, 0, 0, 1, h);

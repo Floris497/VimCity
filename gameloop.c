@@ -21,14 +21,19 @@ SDL_Color colors[] = {
     {0x00, 0x00 , 0xFF, 0xFF}, // blue
 };
 
+//moves the cursor and handles all extra logic, like orienting to the right direction before moving
 void moveCursor(Game *gameState, int xDir, int yDir) {
     int w = gameState->map.width;
     int h = gameState->map.height;
-    gameState->prevCursorX = gameState->cursorX;
-    gameState->prevCursorY = gameState->cursorY;
-    gameState->cursorX += xDir;
-    gameState->cursorY += yDir;
     
+    if(xDir!=gameState->cursorXDir || yDir!=gameState->cursorYDir) {
+        gameState->cursorXDir = xDir;
+        gameState->cursorYDir = yDir;
+    } else {
+        gameState->cursorX+=xDir; 
+        gameState->cursorY+=yDir; 
+    }
+
     if(gameState->cursorX < 0)
         gameState->cursorX = 0;
     if(gameState->cursorY < 0)
@@ -37,18 +42,6 @@ void moveCursor(Game *gameState, int xDir, int yDir) {
         gameState->cursorX = w-1;
     if(gameState->cursorY >= h)
         gameState->cursorY = h-1;
-
-    int cursorXDir = gameState->cursorX - gameState->prevCursorX;
-    int cursorYDir = gameState->cursorY - gameState->prevCursorY;
-    if(abs(cursorXDir) > abs(cursorYDir)) {
-        cursorXDir = cursorXDir > 0 ? 1 : -1;
-        cursorYDir = 0;
-    } else {
-        cursorXDir = 0; 
-        cursorYDir = cursorYDir > 0 ? 1 : -1;
-    }
-    gameState->cursorXDir = cursorXDir;
-    gameState->cursorYDir = cursorYDir;
 }
 
 //maps a direction to the vim direction keys (hjkl) = (1234) = (LEFT DOWN UP RIGHT)
@@ -121,7 +114,6 @@ InputAction getAction(SDL_Keycode key) {
 }
 
 void actionTriggered(Game *gameState, InputAction action, bool down) {
-    SDL_Log("Action triggered : %d, down=%d\n", action, down);
     if(down) {
         gameState->actionDownTicks[action] = 1;
     } else {
@@ -133,7 +125,6 @@ void updateInput(Game *gameState) {
     for(int i = 0; i < kActionLast; i++) {
         //update action
         if((gameState->actionDownTicks[i] > 15 && gameState->actionDownTicks[i]%2==0) || gameState->actionDownTicks[i]==1) {
-            SDL_Log("key down %d\n", i);
             switch(i) {
                 case kActionLeft:
                     moveCursor(gameState, -1, 0);
@@ -165,9 +156,7 @@ int gameLoop(Screen *screen, Game *gameState) {
     SDL_Event e;
     bool keepRunning = true;
     InputAction action;
-    Tile tile;
     while (SDL_PollEvent(&e)) {
-        bool isKeyDown = false;
         switch (e.type) {
             case SDL_QUIT:
                 keepRunning = false;

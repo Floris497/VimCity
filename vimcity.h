@@ -57,6 +57,8 @@ struct Text {
 struct Screen {
     int width; 
     int height;
+    int cameraX;
+    int cameraY;
     SDL_Renderer *renderer;
     long double timePerFrame;
     TTF_Font *font;
@@ -89,10 +91,9 @@ struct Game {
     long tick;
     int cursorX;
     int cursorY;
-    int prevCursorX;
-    int prevCursorY;
     int cursorXDir;
     int cursorYDir;
+    int tileSize;
 
     int nCars;
     Car *carList;

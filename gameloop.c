@@ -44,6 +44,19 @@ void moveCursor(Game *gameState, int xDir, int yDir) {
         gameState->cursorY = h-1;
 }
 
+void centerCamera(Screen *screen, Game *gameState) {
+    int screenW = screen->width;
+    int screenH = screen->height;
+    int tileSize = gameState->tileSize;
+    int widthInTiles = screenW/tileSize;
+    int heightInTiles = screenH/tileSize;
+    int cx = gameState->cursorX - widthInTiles/2;
+    int cy = gameState->cursorY - heightInTiles/2;
+    screen->cameraX = cx < 0 ? 0 : cx; 
+    screen->cameraY = cy < 0 ? 0 : cy;
+    SDL_Log("centering camera");
+}
+
 //maps a direction to the vim direction keys (hjkl) = (1234) = (LEFT DOWN UP RIGHT)
 int directionToVim(int xDir, int yDir) {
     if(xDir < 0) { return 0; }
@@ -107,6 +120,9 @@ InputAction getAction(SDL_Keycode key) {
         case SDLK_c:
            action = kActionBuildCar;
            break;
+        case SDLK_z:
+           action = kActionCenterCamera;
+           break;
         default:
 			action = kActionNothing;
     }
@@ -121,7 +137,7 @@ void actionTriggered(Game *gameState, InputAction action, bool down) {
     }
 }
 
-void updateInput(Game *gameState) {
+void updateInput(Screen *screen, Game *gameState) {
     for(int i = 0; i < kActionLast; i++) {
         //update action
         if((gameState->actionDownTicks[i] > 15 && gameState->actionDownTicks[i]%2==0) || gameState->actionDownTicks[i]==1) {
@@ -140,6 +156,9 @@ void updateInput(Game *gameState) {
                     break;
                 case kActionBuildRoad:
                     buildRoad(gameState);
+                    break;
+                case kActionCenterCamera:
+                    centerCamera(screen, gameState);
                     break;
                 default:
                     ;
@@ -167,7 +186,7 @@ int gameLoop(Screen *screen, Game *gameState) {
                 actionTriggered(gameState, action, e.type==SDL_KEYDOWN);
         }
     } 
-    updateInput(gameState);
+    updateInput(screen, gameState);
     gameTick(gameState);
     draw(screen, gameState);
     return keepRunning;
@@ -285,25 +304,37 @@ int draw(Screen *screen, Game *gameState) {
     SDL_RenderClear(screen->renderer);
     int w = gameState -> map.width;
     int h = gameState -> map.height;
-    const int TILE_SIZE = 20;
+    int tileSize = gameState->tileSize;
    
-    for(int i = 0; i < w; i++) {
-        for(int j = 0; j < h; j++) {
-            int tileType = gameState -> map.tiles[i][j].type;
+    int screenWidthInTiles = screen->width/tileSize;
+    int screenHeightInTiles = screen->height/tileSize;
+    int fromX = screen->cameraX;
+    int fromY = screen->cameraY;
+    int toX = fromX + screenWidthInTiles;
+    int toY = fromY + screenHeightInTiles;
+    if(toX > w) {
+        toX = w;
+    }
+    if(toY > h) {
+        toY = h;
+    }
+    for(int x = fromX; x < toX; x++) {
+        for(int y = fromY; y < toY; y++) {
+            int tileType = gameState -> map.tiles[x][y].type;
             switch(tileType) {
                 case kTileEmpty: //nothing
                     break;
                 case kTileRoadLeft: //road
-                    drawRoad(screen->renderer, gameState, i, j, -1, 0, TILE_SIZE);
+                    drawRoad(screen->renderer, gameState, x, y, -1, 0, tileSize);
                     break;
                 case kTileRoadUp:
-                    drawRoad(screen->renderer, gameState, i, j, 0, -1, TILE_SIZE);
+                    drawRoad(screen->renderer, gameState, x, y, 0, -1, tileSize);
                     break;
                 case kTileRoadDown:
-                    drawRoad(screen->renderer, gameState, i, j, 0, 1, TILE_SIZE);
+                    drawRoad(screen->renderer, gameState, x, y, 0, 1, tileSize);
                     break;
                 case kTileRoadRight:
-                    drawRoad(screen->renderer, gameState, i, j, 1, 0,  TILE_SIZE);
+                    drawRoad(screen->renderer, gameState, x, y, 1, 0,  tileSize);
                     break;
             };
         }
@@ -312,12 +343,12 @@ int draw(Screen *screen, Game *gameState) {
     for(int i = 0; i < gameState->nCars; i++) {
         Car car = gameState->carList[i];
         SDL_SetRenderDrawColor(screen->renderer, 0xFF, 0,0,0xFF); 
-        SDL_Rect carRect = {car.x*TILE_SIZE+5, car.y*TILE_SIZE+5, 10, 10};
+        SDL_Rect carRect = {car.x*tileSize+5, car.y*tileSize+5, 10, 10};
         SDL_RenderFillRect(screen->renderer, &carRect);
     }
 
     //draw cursor
-    SDL_Rect cursorOutline = {gameState->cursorX *TILE_SIZE, gameState->cursorY * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+    SDL_Rect cursorOutline = {gameState->cursorX *tileSize, gameState->cursorY * tileSize, tileSize, tileSize};
     int cursorXDir = gameState->cursorXDir;
     int cursorYDir = gameState->cursorYDir;
     float cx = cursorOutline.x + cursorOutline.w/2;

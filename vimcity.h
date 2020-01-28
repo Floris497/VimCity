@@ -38,6 +38,7 @@ enum InputAction
     kActionRight,
     kActionBuildRoad,
     kActionBuildCar,
+    kActionCenterCamera,
     kActionLast,
 };
 
@@ -123,6 +124,8 @@ InputAction getAction(SDL_Keycode key);
 
 void actionTriggered(Game *gameState, InputAction action, bool down);
 
-void updateInput(Game *gameState);
+void updateInput(Screen *screen, Game *gameState);
+
+void centerCamera(Screen *screen, Game *gameState);
 
 #endif /* vimcity_h */

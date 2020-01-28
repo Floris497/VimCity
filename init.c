@@ -14,6 +14,8 @@ void init_graphics(Screen *screenState)
 {
     screenState->width = 1280;
     screenState->height = 720;
+    screenState->cameraX = 0;
+    screenState->cameraY = 0;
     screenState->renderer = NULL;
     screenState->timePerFrame = (SDL_GetPerformanceFrequency()/60.0);
     screenState->FPSHistory = circularList(10);
@@ -42,8 +44,8 @@ void init_game(Game *gameState) {
     for(int i = 0; i < kActionLast; i++) {
         gameState->actionDownTicks[i] = -1;
     }
-    int w = 60;
-    int h = 30;
+    int w = 600;
+    int h = 300;
     gameState->map.tiles = (Tile **)malloc(w * sizeof(Tile*));
     for(int i = 0; i < w; i++) {
         gameState -> map.tiles[i] = (Tile *) malloc(h * sizeof(Tile));

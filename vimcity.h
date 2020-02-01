@@ -27,6 +27,7 @@ enum TileType
     kTileRoadDown,
     kTileRoadUp,
     kTileRoadRight,
+    kTileHouseSmall,
 };
 
 enum InputAction
@@ -39,6 +40,7 @@ enum InputAction
     kActionBuildRoad,
     kActionBuildCar,
     kActionCenterCamera,
+    kActionBuildHouse,
     kActionLast,
 };
 
@@ -48,6 +50,7 @@ typedef struct Tile Tile;
 typedef struct Text Text;
 typedef struct Screen Screen;
 typedef struct Car Car;
+typedef struct Person Person;
 
 struct Text {
     SDL_Color color;
@@ -64,6 +67,11 @@ struct Screen {
     long double timePerFrame;
     TTF_Font *font;
     t_list *FPSHistory;
+};
+
+struct Person {
+    int x;
+    int y;
 };
 
 struct Car {
@@ -110,13 +118,15 @@ int draw(Screen *screen, Game *gameState);
 
 int gameLoop(Screen* screen, Game *gameState);
 
-void buildRoad(Game *gameState);
+void buildRoad(Screen *screen, Game *gameState);
+
+void buildHouse(Screen *screen, Game *gameState);
 
 SDL_Texture *createTextTexture(const char* string, Screen *screenState, Text *textureInfo);
 
 void addCar(Game *gameState, int x, int y);
 
-void removeCar(Game *gameState);
+void removeCar(Game *gameState, int carIdx);
 
 int directionToVim(int xDir, int yDir);
 
